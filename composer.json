@@ -1,0 +1,22 @@
+{
+    "name": "jtcczu/yii2-applet",
+    "description": "Yii2 component for applet",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "guzzlehttp/guzzle": "^6.2",
+        "php": ">=5.5",
+        "yiisoft/yii2": "~2.0.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jtcczu\\Applet": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "jiangtao",
+            "email": "847837639@qq.com"
+        }
+    ]
+}
