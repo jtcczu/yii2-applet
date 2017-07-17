@@ -1,6 +1,5 @@
 <?php
-namespace Jtcczu\Applet;
-
+namespace Jtcczu\Yii\Applet;
 
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
@@ -9,16 +8,15 @@ use yii\helpers\Json;
 use yii\web\HttpException;
 
 /**
- * 
  * $user = Yii::$app->applet->getSessionKey($code)->decryptData(); 
  * 返回Userinterface的实现
  * $user->getOpenid();
  * $user->getNickName();
+ *
  * @package Jtcczu\Applet
  */
 class Applet extends Component
 {
-    CONST JSCODE_SESSION_URL = 'https://api.weixin.qq.com/sns/jscode2session';
     /**
      * @var string
      */
@@ -32,19 +30,19 @@ class Applet extends Component
      */
     protected $client;
 
+    protected $baseUrl = 'https://api.weixin.qq.com/sns';
+
     protected $sessionJsonKey = 'session_key';
 
     public function getSessionKey($code)
     {
-        $client = $this->getClient();
-
-        $response = $client->get(self::JSCODE_SESSION_URL, [
+        $response = $this->getClient()->get($this->getSessionKeyUrl(), [
             'appid' => $this->appid,
             'secret' => $this->secret,
             'js_code' => $code,
             'grant_type' => 'authorization_code'
         ]);
-        
+
         $result = $this->parseJson($response);
 
         if (isset($result['errcode'])) {
@@ -54,7 +52,10 @@ class Applet extends Component
         return $result[$this->sessionJsonKey];
     }
     
-    
+    protected function getSessionKeyUrl()
+    {
+        return $this->baseUrl.'/jscode2session';
+    }
 
     protected function getClient()
     {

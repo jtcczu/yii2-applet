@@ -1,5 +1,5 @@
 <?php
-namespace Jtcczu\Applet\Traits;
+namespace Jtcczu\Yii\Applet\Traits;
 
 use Exception;
 
