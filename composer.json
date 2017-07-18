@@ -10,7 +10,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Jtcczu\\Yii\\Applet": "src/"
+            "Jtcczu\\Yii\\Applet": "src"
         }
     },
     "authors": [
