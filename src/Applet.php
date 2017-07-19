@@ -75,7 +75,7 @@ class Applet extends Component
      * 
      * @param  $encryptedData
      * @param  $iv
-     * @return mixed
+     * @return \Jtcczu\Applet\User
      * @throws DecryptionException
      */
     public function getUserByDecrypt($encryptedData, $iv)
@@ -105,7 +105,7 @@ class Applet extends Component
         if($dataArr['watermark']['appid'] != $this->appid ) {
             throw new DecryptionException('Illegal Buffer', DecryptionException::ERROR_ILLEGAL_BUFFER);
         }
-        return $dataArr;
+        return new User($dataArr);
     }
 
     /**
