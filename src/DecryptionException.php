@@ -1,6 +1,6 @@
 <?php
 
-namespace Jtcczu\Yii\Applet;
+namespace Jtcczu\Applet;
 
 use yii\base\Exception;
 

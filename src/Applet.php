@@ -1,6 +1,6 @@
 <?php
 
-namespace Jtcczu\Yii\Applet;
+namespace Jtcczu\Applet;
 
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;

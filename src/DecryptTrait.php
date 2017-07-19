@@ -1,9 +1,8 @@
 <?php
 
-namespace Jtcczu\Yii\Applet;
+namespace Jtcczu\Applet;
 
 use Exception;
-use Jtcczu\Yii\DecryptionException;
 
 /**
  * Class DecryptTrait
@@ -27,11 +26,12 @@ trait DecryptTrait
 
     /**
      * decrypt data
-     * 
-     * @param  $aesKey
-     * @param  $aesCipher
-     * @param  $aesIV
+     *
+     * @param $aesKey
+     * @param $aesCipher
+     * @param $aesIV
      * @return string
+     * @throws DecryptionException
      */
     protected function decrypt( $aesKey, $aesCipher, $aesIV )
     {   
