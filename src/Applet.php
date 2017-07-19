@@ -50,10 +50,12 @@ class Applet extends Component
     {
         $response = $this->getClient()->get(
             $this->getSessionKeyUrl(), [
-            'appid' => $this->appid,
-            'secret' => $this->secret,
-            'js_code' => $code,
-            'grant_type' => 'authorization_code'
+                'query' => [
+                    'appid' => $this->appid,
+                    'secret' => $this->secret,
+                    'js_code' => $code,
+                    'grant_type' => 'authorization_code'
+                ]
             ]
         );
 
