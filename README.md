@@ -1,6 +1,6 @@
 # Yii2 Applet Extension
 
-Yii2小程序组件 获取用户信息和会话密钥（session_key）
+Yii2小程序组件 获取用户信息和会话密钥
 
 
 ## 环境需求
