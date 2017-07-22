@@ -39,10 +39,16 @@ return [
  $user->nickName; //昵称
  $user->gender; //性别
  ...
+ 
  //登录凭证code获取session_key
  Yii::$app->applet->getSessionFromServer($code);
+ 
+ //获取session_key
+ Yii::$app->applet->getSession();
+ 
  //加密数据encryptedData对称解密
  Yii::$app->applet->getUserByDecrypt($encryptedData,$iv);
+ 
  //签名校验
  Yii::$app->applet->checkSignature($rawData, $signature);
  
