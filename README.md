@@ -86,7 +86,8 @@ public function actionTest(){
   $contents = file_get_contents('php://input');
   $data = json_decode($contents,true);
   $user = Yii::$app->applet
-                   ->getSessionFromServer($data['code'])                                                   ->getUserByDecrypt($data['encryptedData'],$data['iv']);
+                   ->getSessionFromServer($data['code'])
+                   ->getUserByDecrypt($data['encryptedData'],$data['iv']);
 }                   
 ```
 
