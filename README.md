@@ -51,6 +51,45 @@ return [
 微信小程序api文档
 https://mp.weixin.qq.com/debug/wxadoc/dev/api/api-login.html#wxloginobject
 
+## 快速开始
+
+小程序代码
+```
+wx.login({
+        success: function (login) {
+          wx.getUserInfo({
+            success: function (res) {
+              wx.request({
+                url: 'xxx',
+                method : 'post',
+                data:{
+                    code : login.code,
+                    rawData : res.rawData,
+                    signature : res.signature,
+                    encryptedData : res.encryptedData,
+                    iv : res.iv
+                },
+                dataType : 'json',
+                success : function(res){
+                }
+              })
+            }
+          })
+        }
+      })
+```
+
+后端代码
+
+```
+public function actionTest(){    
+  $contents = file_get_contents('php://input');
+  $data = json_decode($contents,true);
+  $user = Yii::$app->applet
+                   ->getSessionFromServer($data['code'])                                                   ->getUserByDecrypt($data['encryptedData'],$data['iv']);
+}                   
+```
+
 
 
 
