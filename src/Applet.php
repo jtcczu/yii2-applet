@@ -3,6 +3,7 @@
 namespace Jtcczu\Applet;
 
 use GuzzleHttp\Client;
+use Jtcczu\Applet\Decrypt\AppletDecrypt;
 use Psr\Http\Message\ResponseInterface;
 use yii\base\Component;
 use yii\helpers\Json;
@@ -10,6 +11,8 @@ use yii\web\HttpException;
 
 /**
  * Class Applet
+ *
+ * decrypt
  */
 class Applet extends Component
 {
@@ -35,10 +38,9 @@ class Applet extends Component
      */
     protected $sessionJsonKey = 'session_key';
     /**
-     * @var string
+     * @var Session
      */
     protected $session;
-
     /**
      * Get session_key from server
      * 
@@ -46,7 +48,14 @@ class Applet extends Component
      * @return $this
      * @throws HttpException
      */
-    public function getSessionFromServer($code)
+    public function getSession($code)
+    {
+        $this->getSessionFromServer($code);
+
+        return $this->session;
+    }
+
+    protected function getSessionFromServer($code)
     {
         $response = $this->getClient()->get(
             $this->getSessionKeyUrl(), [
@@ -58,14 +67,17 @@ class Applet extends Component
                 ]
             ]
         );
-
-        $result = $this->parseJson($response);
-
+        $contents = $response->getBody()->getContents();
+        $result =  Json::decode($contents);
         if (isset($result['errcode'])) {
             throw new HttpException(500, $result['errmsg']);
         }
+        return $this->setSession($result);
+    }
 
-        $this->session = $result[$this->sessionJsonKey];
+    protected function setSession($data)
+    {
+        $this->session = new Session($data);
 
         return $this;
     }
@@ -78,56 +90,11 @@ class Applet extends Component
      * @return \Jtcczu\Applet\User
      * @throws DecryptionException
      */
-    public function getUserByDecrypt($encryptedData, $iv)
+    public function decrypt($encryptedData, $iv)
     {
-        if (strlen($this->session) != 24) {
-            throw new DecryptionException('Illegal Aeskey', DecryptionException::ERROR_ILLEGAL_AESKEY);
-        }
+        $decrypt = new AppletDecrypt($this->appid, $this->session->getSessionKey());
 
-        if (strlen($iv) != 24) {
-            throw new DecryptionException('Illegal Iv', DecryptionException::ERROR_ILLEGAL_IV);
-        }
-
-        $aesKey = base64_decode($this->session);
-
-        $aesIV = base64_decode($iv);
-
-        $aesCipher = base64_decode($encryptedData);
-
-        $result = $this->decrypt($aesKey, $aesCipher, $aesIV);
-
-        $dataArr = Json::decode($result, true);
-
-        if(is_null($dataArr)) {
-            throw new DecryptionException('Illegal Buffer', DecryptionException::ERROR_ILLEGAL_BUFFER);
-        }
-
-        if($dataArr['watermark']['appid'] != $this->appid ) {
-            throw new DecryptionException('Illegal Buffer', DecryptionException::ERROR_ILLEGAL_BUFFER);
-        }
-        return new User($dataArr);
-    }
-
-    /**
-     * check signature is equal 
-     * 
-     * @param  $rawData
-     * @param  $signature
-     * @return bool
-     */
-    public function checkSignature($rawData, $signature)
-    {
-        return sha1($rawData.$this->session) === $signature;
-    }
-
-    /**
-     * Get session_key
-     * 
-     * @return string
-     */
-    public function getSession()
-    {
-        return $this->session;
+        return $decrypt->getUser($encryptedData, $iv);
     }
 
     /**
@@ -162,20 +129,6 @@ class Applet extends Component
         
         return $this;
     }
-
-    /**
-     * parse json to array
-     * 
-     * @param  ResponseInterface $response
-     * @return mixed
-     */
-    protected function parseJson(ResponseInterface $response)
-    {
-        $contents = $response->getBody()->getContents();
-        
-        return Json::decode($contents);
-    }
-
 }
 
 

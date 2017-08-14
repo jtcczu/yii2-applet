@@ -1,6 +1,6 @@
 <?php
 
-namespace Jtcczu\Applet;
+namespace Jtcczu\Applet\Decrypt;
 
 use yii\base\Exception;
 
