@@ -4,7 +4,6 @@ namespace Jtcczu\Applet;
 
 use GuzzleHttp\Client;
 use Jtcczu\Applet\Decrypt\AppletDecrypt;
-use Psr\Http\Message\ResponseInterface;
 use yii\base\Component;
 use yii\helpers\Json;
 use yii\web\HttpException;
@@ -16,7 +15,6 @@ use yii\web\HttpException;
  */
 class Applet extends Component
 {
-    use DecryptTrait;
     /**
      * @var string
      */
@@ -48,14 +46,7 @@ class Applet extends Component
      * @return $this
      * @throws HttpException
      */
-    public function getSession($code)
-    {
-        $this->getSessionFromServer($code);
-
-        return $this->session;
-    }
-
-    protected function getSessionFromServer($code)
+    public function makeSession($code)
     {
         $response = $this->getClient()->get(
             $this->getSessionKeyUrl(), [
@@ -82,19 +73,27 @@ class Applet extends Component
         return $this;
     }
 
-    /**
-     * Get userinfo by decrypt
-     * 
-     * @param  $encryptedData
-     * @param  $iv
-     * @return \Jtcczu\Applet\User
-     * @throws DecryptionException
-     */
-    public function decrypt($encryptedData, $iv)
+    public function getSession()
     {
-        $decrypt = new AppletDecrypt($this->appid, $this->session->getSessionKey());
+        return $this->session;
+    }
 
-        return $decrypt->getUser($encryptedData, $iv);
+    /**
+     * instance decrypt
+     */
+    public function decrypt()
+    {
+        return new AppletDecrypt($this->appid, $this->session->getSessionKey());
+    }
+
+    public function __call($method, $arguments)
+    {
+        $decrypt = $this->decrypt();
+        if(method_exists($decrypt, $method)){
+            return call_user_func_array([$decrypt, $method], $arguments);
+        }
+
+        throw new \BadMethodCallException("Method [$method] does not exist.");
     }
 
     /**

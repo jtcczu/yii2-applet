@@ -21,7 +21,7 @@ class Session
         return array_key_exists($key, $this->data);
     }
 
-    public function getOpenId()
+    public function getOpenid()
     {
         return $this->get('openid');
     }

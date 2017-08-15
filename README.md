@@ -32,26 +32,14 @@ return [
 ## 使用
 
 ```
- $user = Yii::$app->applet
-                  ->getSessionFromServer($code)
-                  ->getUserByDecrypt($encryptedData,$iv);
- $user->openId;  //openId
- $user->nickName; //昵称
- $user->gender; //性别
- ...
- 
- //登录凭证code获取session_key
- Yii::$app->applet->getSessionFromServer($code);
- 
- //获取session_key
- Yii::$app->applet->getSession();
- 
- //加密数据encryptedData对称解密
- Yii::$app->applet->getUserByDecrypt($encryptedData,$iv);
- 
- //签名校验
- Yii::$app->applet->checkSignature($rawData, $signature);
- 
+ $applet = Yii::$app->applet->makeSession($code); 
+ $applet->getUser($encryptedData, $iv); //返回用户信息
+ $applet->checkSignature($rawData, $signature); //数据签名校验
+
+ $session = $applet->getSession(); 
+ $session->getOpenid(); //openid
+ $session->getSessionKey(); //session_key
+ $session->getUnionid(); //unionid            
 ```
 
 微信小程序api文档
@@ -92,8 +80,8 @@ public function actionTest(){
   $contents = file_get_contents('php://input');
   $data = json_decode($contents,true);
   $user = Yii::$app->applet
-                   ->getSessionFromServer($data['code'])
-                   ->getUserByDecrypt($data['encryptedData'],$data['iv']);
+                   ->makeSession($data['code'])
+                   ->getUser($data['encryptedData'],$data['iv']);
 }                   
 ```
 
