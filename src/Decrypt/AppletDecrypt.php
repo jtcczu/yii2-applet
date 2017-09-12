@@ -26,7 +26,7 @@ class AppletDecrypt
             throw new DecryptionException('Illegal Iv', DecryptionException::ERROR_ILLEGAL_IV);
         }
 
-        list($aesKey, $aesIV, $aesCipher) = array_map('base64_decode', [$this->session, $iv, $encryptedData]);
+        list($aesKey, $aesIV, $aesCipher) = array_map('base64_decode', [$this->sessionKey, $iv, $encryptedData]);
 
         $result = self::decrypt($aesKey, $aesCipher, $aesIV);
 
